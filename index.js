@@ -14,6 +14,7 @@ app.use(bodyParser.json());
 
 // database connection
 const MongoClient = require('mongodb').MongoClient;
+const { ObjectId } = require('bson');
 const uri = "mongodb+srv://mobilecareuser:mobilecare1234@cluster0.kjddt.mongodb.net/mobilecare?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true,useUnifiedTopology: true });
 client.connect(err => {
@@ -35,6 +36,14 @@ client.connect(err => {
   
         res.send(documents);
       })
+    });
+
+    // delete service by id from database
+    app.delete('/delete/:id', (req, res)=>{
+     serviceCollection.deleteOne({_id:ObjectId(req.params.id)})
+     .then(result =>{
+       res.send(result.deletedCount >0)
+     })
     })
 
 });

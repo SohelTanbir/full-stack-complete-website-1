@@ -7,21 +7,42 @@ const dbName = 'mobilecare'
 const user= 'mobilecareuser';
 const pass = 'mobilecare1234'
 
-app.get('/', (req, res)=>{
-    res.send('Server is working properly');
-});
+
+app.use(cors());
+app.use(bodyParser.json());
+
 
 // database connection
 const MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb+srv://mobilecareuser:mobilecare1234@cluster0.kjddt.mongodb.net/mobilecare?retryWrites=true&w=majority";
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true,useUnifiedTopology: true });
 client.connect(err => {
   const serviceCollection = client.db("mobilecare").collection("services");
-    console.log('Database connection successful')
+
+  // insert service into database
+    app.post('/addservice', (req, res)=>{
+      const newService = req.body;
+        serviceCollection.insertOne(newService)
+        .then(result =>{
+          res.send(result.insertedCount > 0)
+        })
+    })
+
+    // read service data from database 
+    app.get('/services', (req, res)=>{
+      serviceCollection.find({})
+      .toArray((error, documents)=>{
+  
+        res.send(documents);
+      })
+    })
+
 });
 
 
-
+app.get('/', (req, res)=>{
+  res.send('Server is working properly');
+});
 
 
 

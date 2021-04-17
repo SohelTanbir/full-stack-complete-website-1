@@ -19,6 +19,7 @@ const uri = "mongodb+srv://mobilecareuser:mobilecare1234@cluster0.kjddt.mongodb.
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true,useUnifiedTopology: true });
 client.connect(err => {
   const serviceCollection = client.db("mobilecare").collection("services");
+  const adminCollection = client.db("mobilecare").collection("admin");
 
   // insert service into database
     app.post('/addservice', (req, res)=>{
@@ -44,6 +45,14 @@ client.connect(err => {
      .then(result =>{
        res.send(result.deletedCount >0)
      })
+    });
+    // add admin for manage dashboard
+    app.post('/addAddmin', (req, res)=>{
+      const admin = req.body;
+      adminCollection.insertOne(admin)
+      .then(result =>{
+        res.send(result.insertedCount > 0)
+      })
     })
 
 });

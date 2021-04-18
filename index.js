@@ -19,6 +19,7 @@ const uri = "mongodb+srv://mobilecareuser:mobilecare1234@cluster0.kjddt.mongodb.
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true,useUnifiedTopology: true });
 client.connect(err => {
   const serviceCollection = client.db("mobilecare").collection("services");
+  const ordersCollection = client.db("mobilecare").collection("orders");
   const adminCollection = client.db("mobilecare").collection("admin");
 
   // insert service into database
@@ -56,13 +57,26 @@ client.connect(err => {
     });
     // find user selected service by id from database
     app.get('/checkout/:id', (req, res)=>{
-      console.log(req.params.id)
       serviceCollection.find({_id:ObjectId(req.params.id)})
       .toArray((error, document)=>{
         res.send(document)
       })
-      .then(result =>{
-        console.log(result)
+    });
+
+     // insert service into database
+    app.post('/order', (req, res)=>{
+      const order = req.body;
+       ordersCollection.insertOne(order)
+        .then(result =>{
+          res.send(result.insertedCount > 0)
+        })
+    });
+
+    // read order from database
+    app.get('/orders', (req, res)=>{
+      ordersCollection.find({})
+      .toArray((error, documents)=>{
+        res.send(documents);
       })
     })
 

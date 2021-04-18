@@ -53,6 +53,17 @@ client.connect(err => {
       .then(result =>{
         res.send(result.insertedCount > 0)
       })
+    });
+    // find user selected service by id from database
+    app.get('/checkout/:id', (req, res)=>{
+      console.log(req.params.id)
+      serviceCollection.find({_id:ObjectId(req.params.id)})
+      .toArray((error, document)=>{
+        res.send(document)
+      })
+      .then(result =>{
+        console.log(result)
+      })
     })
 
 });

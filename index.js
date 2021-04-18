@@ -21,6 +21,7 @@ client.connect(err => {
   const serviceCollection = client.db("mobilecare").collection("services");
   const ordersCollection = client.db("mobilecare").collection("orders");
   const adminCollection = client.db("mobilecare").collection("admin");
+  const reviewCollection = client.db("mobilecare").collection("reviews");
 
   // insert service into database
     app.post('/addservice', (req, res)=>{
@@ -77,6 +78,15 @@ client.connect(err => {
       ordersCollection.find({})
       .toArray((error, documents)=>{
         res.send(documents);
+      })
+    });
+
+    // save review into database
+    app.post('/review', (req, res)=>{
+      const review = req.body;
+      reviewCollection.insertOne(review)
+      .then(result =>{
+        res.send(result.insertedCount > 0)
       })
     })
 

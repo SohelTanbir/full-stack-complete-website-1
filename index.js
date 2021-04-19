@@ -49,8 +49,7 @@ client.connect(err => {
     });
     // delete order from database
     app.delete('/deleteOrder/:id',(req, res)=>{
-      ordersCollection.deleteOne({_id:ObjectId(req.params.id)})
-
+      ordersCollection.deleteOne({_id:req.params.id})
       .then(result=>{
         res.send(result.deletedCount > 0)
       })

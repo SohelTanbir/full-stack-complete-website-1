@@ -79,6 +79,14 @@ client.connect(err => {
         })
     });
 
+    // read orders for manage page
+    app.get('/manageOrder', (req, res)=>{
+      ordersCollection.find({})
+      .toArray((error, orders)=>{
+        res.send(orders)
+      })
+    })
+
     // read order from database
     app.post('/orders', (req, res)=>{
       const email = req.body.email;

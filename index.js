@@ -36,7 +36,6 @@ client.connect(err => {
     app.get('/services', (req, res)=>{
       serviceCollection.find({})
       .toArray((error, documents)=>{
-  
         res.send(documents);
       })
     });
@@ -48,6 +47,14 @@ client.connect(err => {
        res.send(result.deletedCount >0)
      })
     });
+    // delete order from database
+    app.delete('/deleteOrder/:id',(req, res)=>{
+      ordersCollection.deleteOne({_id:ObjectId(req.params.id)})
+
+      .then(result=>{
+        res.send(result.deletedCount > 0)
+      })
+    })
     // add admin for manage dashboard
     app.post('/addAddmin', (req, res)=>{
       const admin = req.body;
@@ -87,6 +94,14 @@ client.connect(err => {
       reviewCollection.insertOne(review)
       .then(result =>{
         res.send(result.insertedCount > 0)
+      })
+    });
+
+    // read review from database
+    app.get('/reviews', (req, res)=>{
+      reviewCollection.find({})
+      .toArray((error, documents)=>{
+        res.send(documents);
       })
     })
 

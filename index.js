@@ -80,11 +80,24 @@ client.connect(err => {
     });
 
     // read order from database
-    app.get('/orders', (req, res)=>{
-      ordersCollection.find({})
+    app.post('/orders', (req, res)=>{
+      const email = req.body.email;
+      adminCollection.find({admin:email})
       .toArray((error, documents)=>{
-        res.send(documents);
+         if(documents.length === 0){
+           ordersCollection.find({email:email})
+           .toArray((error, order)=>{
+            res.send(order)
+           })
+         }else{
+          ordersCollection.find({})
+          .toArray((error, order)=>{
+            res.send(order)
+          })
+         }
       })
+
+    
     });
 
     // save review into database
@@ -102,7 +115,15 @@ client.connect(err => {
       .toArray((error, documents)=>{
         res.send(documents);
       })
-    })
+    });
+
+   app.post('/isAdmin', (req, res)=>{
+     const email = req.body.email;
+     adminCollection.find({admin:email})
+     .toArray((error, admin)=>{
+         res.send(admin.length > 0);
+     })
+   })
 
 });
 
